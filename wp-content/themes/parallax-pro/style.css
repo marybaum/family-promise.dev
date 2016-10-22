@@ -207,7 +207,7 @@ textarea:focus {
 }
 
 a {
-	color: #f04848;
+	color: #0071bb;
 	text-decoration: none;
 }
 
@@ -266,36 +266,38 @@ h3,
 h4,
 h5,
 h6 {
-	color: #000;
+	color: #fff;
 	font-family: 'Open Sans', sans-serif;
 	font-weight: 700;
-	line-height: 1.2;
-	margin: 0 0 20px;
+	line-height: 1;
+	margin: .6em 0 0;
 }
 
 h1 {
-	font-size: 36px;
+	font-family: Rasa, serif;
+	font-size: 4.8em;
+	font-weight: 500;
 }
 
 h2 {
 	
-	font-size: 32px;
+	font-size: 4.2em;
 }
 
 h3 {
-	font-size: 30px;
+	font-size: 3em;
 }
 
 h4 {
-	font-size: 24px;
+	font-size: 2em;
 }
 
 h5 {
-	font-size: 20px;
+	font-size: 1.8em;
 }
 
 h6 {
-	font-size: 18px;
+	font-size: 1.2em;
 }
 
 /* Objects
@@ -386,7 +388,6 @@ input[type="submit"] {
 input:hover[type="button"],
 input:hover[type="reset"],
 input:hover[type="submit"] {
-	background-color: #f04848;
 	color: #fff;
 }
 
@@ -474,7 +475,7 @@ Structure and Layout
 .site-inner,
 .wrap {
 	margin: 0 auto;
-	max-width: 1140px;
+	max-width: 72em;
 }
 
 .site-inner {
@@ -662,7 +663,7 @@ Common Classes
 }
 
 .entry-title a:hover {
-	color: #f04848;
+	color: #0071bb;
 }
 
 .widget-title {
@@ -855,7 +856,6 @@ Site Header
 ---------------------------------------------------------------------------------------------------- */
 
 .site-header {
-	background-color: #000;
 	position: fixed;
 	width: 100%;
 	z-index: 999;
@@ -875,7 +875,7 @@ Site Header
 }
 
 .site-title {
-	font-family: 'Open Sans',, sans-serif;
+	font-family: 'Open Sans', sans-serif;
 	font-size: 30px;
 	font-weight: 400;
 	letter-spacing: 1px;
@@ -886,7 +886,7 @@ Site Header
 
 .site-title a,
 .site-title a:hover {
-	color: #fff !important;
+	text-indent: -99999px;
 }
 
 .header-image .title-area {
@@ -923,7 +923,7 @@ Site Header
 }
 
 .site-header .widget-area a:hover {
-	color: #f04848;
+	color: #0071bb;
 }
 
 .site-header .textwidget {
@@ -936,14 +936,15 @@ Site Navigation
 ---------------------------------------------------------------------------------------------------- */
 
 .genesis-nav-menu {
+	background: #fff;
 	clear: both;
-	color: #fff;
-	font-family: 'Open Sans',, sans-serif;
-	font-size: 16px;
+	color: #4d4d55;
+	font-family: 'Open Sans',sans-serif;
+	font-size: .8rem;
 	font-weight: 400;
 	letter-spacing: 1px;
 	line-height: 1;
-	width: 100%;
+	text-transform: normal;
 }
 
 .genesis-nav-menu .menu-item {
@@ -966,7 +967,7 @@ Site Navigation
 .genesis-nav-menu .current-menu-item > a,
 .genesis-nav-menu .sub-menu a:hover,
 .genesis-nav-menu .sub-menu .current-menu-item > a:hover {
-	color: #f04848;
+	color: #0071bb;
 }
 
 .genesis-nav-menu > .menu-item > a {
@@ -1043,9 +1044,10 @@ Site Navigation
 --------------------------------------------- */
 
 .nav-primary {
-	background-color: #000;
-	margin-bottom: 60px;
-	text-align: center;
+	background-color: #fff;
+	color: #4d4d55;
+	margin: 1rem 0;
+	text-align: left;
 }
 
 /* Secondary Navigation
@@ -1127,7 +1129,7 @@ Content Area
 }
 
 .home-odd .featured-content .entry-title a:hover {
-	color: #f04848;
+	color: #0071bb;
 }
 
 .home-even p:last-child,
@@ -1151,17 +1153,18 @@ Content Area
 
 .home-section-1 {
 	color: #fff;
-	background: #4d4d55 url(images/fpsgv-logomark-grey.svg) 50% 50% no-repeat;
-	background-size: 16%;
+	background: #4d4d55 url(images/fpsgv-logomark-grey.svg) 52% 51% no-repeat;
+	background-size: contain;
+	
 }
 
-.home-odd h2 {
-	font-size: 2.7em;
-	font-weight: 700;
+.home-section-3 {
+	background: url(images/bgd3.jpg);
 }
+
 
 /* Pricing Table
---------------------------------------------- */
+--------------------------------------------- 
 
 .pricing-table {
 	font-size: 22px;
@@ -1223,10 +1226,10 @@ Content Area
 }
 
 .pricing-table a.button:hover {
-	background-color: #f04848;
+	background-color: #0071bb;
 	border: 3px solid #f04848;
 	color: #fff;
-}
+}*/
 
 /* Content
 --------------------------------------------- */
@@ -1393,7 +1396,7 @@ p.entry-meta {
 
 .archive-pagination li a:hover,
 .archive-pagination .active a {
-	background-color: #f04848;
+	background: #0071bb;
 	color: #fff;
 }
 
@@ -1551,7 +1554,6 @@ Footer Widgets
 ---------------------------------------------------------------------------------------------------- */
 
 .footer-widgets {
-	background-color: #f04848;
 	clear: both;
 	font-size: 24px;
 	padding: 100px 0;
@@ -1582,8 +1584,8 @@ Site Footer
 ---------------------------------------------------------------------------------------------------- */
 
 .site-footer {
-	background-color: #000;
-	padding: 40px 0;
+	color: #4d4d55;
+	padding: 2em 0;
 	text-align: center;
 }
 
@@ -1593,7 +1595,7 @@ Site Footer
 }
 
 .site-footer a:hover {
-	color: #f04848;
+	color: #0071bb;
 }
 
 .site-footer p {
