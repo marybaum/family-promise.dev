@@ -79,7 +79,14 @@
 
 */
 
-
+/* Colors
+ * --------------------------------
+ * Green #9adbce
+ * gold #fcc219 
+ * charcoal #4d4d55
+ * grey #5d5e65
+ * FP blue #0071bb
+ */
 /*
 Imports
 ---------------------------------------------------------------------------------------------------- */
@@ -158,10 +165,14 @@ Defaults
 /* Typographical Elements
 --------------------------------------------- */
 
+html {
+	font-size: 100%;
+}
+
 body {
 	background-color: #fff;
-	color: #000;
-	font-family: 'Sorts Mill Goudy', sans-serif;
+	color: #4d4d55;
+	font-family: 'Open Sans', sans-serif;
 	font-size: 22px;
 	font-weight: 400;
 	line-height: 1.5;
@@ -256,8 +267,8 @@ h4,
 h5,
 h6 {
 	color: #000;
-	font-family: Montserrat, sans-serif;
-	font-weight: 400;
+	font-family: 'Open Sans', sans-serif;
+	font-weight: 700;
 	line-height: 1.2;
 	margin: 0 0 20px;
 }
@@ -267,6 +278,7 @@ h1 {
 }
 
 h2 {
+	
 	font-size: 32px;
 }
 
@@ -362,7 +374,7 @@ input[type="submit"] {
 	border: none;
 	color: #fff;
 	cursor: pointer;
-	font-family: Montserrat, sans-serif;
+	font-family: 'Open Sans',, sans-serif;
 	font-size: 18px;
 	font-weight: 400;
 	letter-spacing: 1px;
@@ -391,7 +403,7 @@ input[type="search"]::-webkit-search-results-button {
 .home-odd a.button {
 	clear: both;
 	display: inline-block;
-	font-family: Montserrat, sans-serif;
+	font-family: 'Open Sans',, sans-serif;
 	font-size: 18px;
 	font-weight: 400;
 	letter-spacing: 1px;
@@ -863,7 +875,7 @@ Site Header
 }
 
 .site-title {
-	font-family: Montserrat, sans-serif;
+	font-family: 'Open Sans',, sans-serif;
 	font-size: 30px;
 	font-weight: 400;
 	letter-spacing: 1px;
@@ -926,7 +938,7 @@ Site Navigation
 .genesis-nav-menu {
 	clear: both;
 	color: #fff;
-	font-family: Montserrat, sans-serif;
+	font-family: 'Open Sans',, sans-serif;
 	font-size: 16px;
 	font-weight: 400;
 	letter-spacing: 1px;
@@ -946,7 +958,7 @@ Site Navigation
 .genesis-nav-menu a {
 	color: #fff;
 	display: block;
-	font-family: Montserrat, sans-serif;
+	font-family: 'Open Sans',, sans-serif;
 	padding: 27px 20px;
 }
 
@@ -1131,12 +1143,21 @@ Content Area
 .home-section-3,
 .home-section-5 {
 	background-attachment: fixed;
-	background-color: #fff;
-	background-position: 0px 0px;
 	background-repeat: no-repeat;
 	-webkit-background-size: cover;
 	-moz-background-size:    cover;
 	background-size:         cover;
+}
+
+.home-section-1 {
+	color: #fff;
+	background: #4d4d55 url(images/fpsgv-logomark-grey.svg) 50% 50% no-repeat;
+	background-size: 16%;
+}
+
+.home-odd h2 {
+	font-size: 2.7em;
+	font-weight: 700;
 }
 
 /* Pricing Table
@@ -1363,7 +1384,7 @@ p.entry-meta {
 	color: #fff;
 	cursor: pointer;
 	display: inline-block;
-	font-family: Montserrat, sans-serif;
+	font-family: 'Open Sans',, sans-serif;
 	font-size: 14px;
 	letter-spacing: 1px;
 	padding: 8px 12px;
@@ -1576,7 +1597,7 @@ Site Footer
 }
 
 .site-footer p {
-	font-family: Montserrat, sans-serif;
+	font-family: 'Open Sans',, sans-serif;
 	font-size: 12px;
 	letter-spacing: 1px;
 	margin-bottom: 0;
