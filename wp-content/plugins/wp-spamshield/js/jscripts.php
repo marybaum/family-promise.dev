@@ -1,10 +1,10 @@
 <?php
 /**
  *  WP-SpamShield Dynamic JS File
- *  Version: 1.9.9.3
+ *  Version: 1.9.9.4
  */
 
-/* Security Sanitization - BEGIN */
+/* Security Check - BEGIN */
 $id='';
 if(!empty($_GET)||FALSE!==strpos($_SERVER['REQUEST_URI'],'?')||!empty($_SERVER['QUERY_STRING'])){
 	@header($_SERVER['SERVER_PROTOCOL'].' 403 Forbidden',TRUE,403);
@@ -18,7 +18,7 @@ if(($wpss_request_method!='GET'&&$wpss_request_method!='HEAD')){
 	@header($_SERVER['SERVER_PROTOCOL'].' 405 Method Not Allowed',TRUE,405);
 	die('ERROR: This resource does not accept requests of that type.');
 }
-/* Security Sanitization - END */
+/* Security Check - END */
 
 /* Timer Start */
 $wpss_js_start_time=microtime(TRUE);
@@ -85,19 +85,17 @@ if(defined('WPSS_HASH')&&!empty($_SESSION)){
 	if(empty($_SESSION[$key_hits_per_page])){$_SESSION[$key_hits_per_page]=array();}
 	if(!empty($_SERVER['HTTP_REFERER'])){
 		$current_ref=trim(strip_tags($_SERVER['HTTP_REFERER']));
-		$key_first_ref='wpss_referer_init_'.WPSS_HASH;
 		$key_last_ref='wpss_jscripts_referer_last_'.WPSS_HASH;
 		$_SESSION[$key_pages_hist][]=$current_ref;
-		if(!isset($_SESSION[$key_hits_per_page][$current_ref])){
-			$_SESSION[$key_hits_per_page][$current_ref]=1;
-		}
+		if(!isset($_SESSION[$key_hits_per_page][$current_ref])){$_SESSION[$key_hits_per_page][$current_ref]=1;}
 		++$_SESSION[$key_hits_per_page][$current_ref];
-		/* First Referrer - Where Visitor Entered Site */
-		if(empty($_SESSION[$key_first_ref])){$_SESSION[$key_first_ref]=$current_ref;}
 		/* Last Referrer */
 		if(empty($_SESSION[$key_last_ref])){$_SESSION[$key_last_ref]='';}
 		$_SESSION[$key_last_ref]=$current_ref;
 	}
+	/* Initial Referrer - Where Visitor Entered Site // External Referrer --> Landing Page */
+	$key_first_ref='wpss_referer_init_'.WPSS_HASH;
+	if(empty($_SESSION[$key_first_ref])&&!empty($_COOKIE['JCS_INENREF'])&&FALSE===strpos($_COOKIE['JCS_INENREF'],WPSS_SERVER_NAME)){$_SESSION[$key_first_ref]=$_COOKIE['JCS_INENREF'];}
 	/* IP, PAGE HITS, PAGES VISITED HISTORY - END */
 
 	/* AUTHOR, EMAIL, URL HISTORY - BEGIN */
@@ -106,43 +104,23 @@ if(defined('WPSS_HASH')&&!empty($_SESSION)){
 	/* This will expose spammer behavior patterns */
 
 	/* Comment Author */
-	$key_auth_hist='wpss_author_history_'.WPSS_HASH;
-	$key_comment_auth='comment_author_'.WPSS_HASH;
+	$key_auth_hist='wpss_author_history_'.WPSS_HASH;$key_comment_auth='comment_author_'.WPSS_HASH;
 	if(empty($_SESSION[$key_auth_hist])){
 		$_SESSION[$key_auth_hist]=array();
-		if(!empty($_COOKIE[$key_comment_auth])){
-			$_SESSION[$key_comment_auth]=$_COOKIE[$key_comment_auth];
-			$_SESSION[$key_auth_hist][]=$_COOKIE[$key_comment_auth];
-		}
-	}else{
-		if(!empty($_COOKIE[$key_comment_auth])){
-			$_SESSION[$key_comment_auth]=$_COOKIE[$key_comment_auth];
-		}
-	}
+		if(!empty($_COOKIE[$key_comment_auth])){$_SESSION[$key_comment_auth]=$_COOKIE[$key_comment_auth];$_SESSION[$key_auth_hist][]=$_COOKIE[$key_comment_auth];}
+	}elseif(!empty($_COOKIE[$key_comment_auth])){$_SESSION[$key_comment_auth]=$_COOKIE[$key_comment_auth];}
 	/* Comment Author Email */
-	$key_email_hist='wpss_author_email_history_'.WPSS_HASH;
-	$key_comment_email='comment_author_email_'.WPSS_HASH;
+	$key_email_hist='wpss_author_email_history_'.WPSS_HASH;$key_comment_email='comment_author_email_'.WPSS_HASH;
 	if(empty($_SESSION[$key_email_hist])){
 		$_SESSION[$key_email_hist]=array();
-		if(!empty($_COOKIE[$key_comment_email])){
-			$_SESSION[$key_comment_email]=$_COOKIE[$key_comment_email];
-			$_SESSION[$key_email_hist][]=$_COOKIE[$key_comment_email];
-		}
-	}else{
-		if(!empty($_COOKIE[$key_comment_email])){$_SESSION[$key_comment_email]=$_COOKIE[$key_comment_email];}
-	}
+		if(!empty($_COOKIE[$key_comment_email])){$_SESSION[$key_comment_email]=$_COOKIE[$key_comment_email];$_SESSION[$key_email_hist][]=$_COOKIE[$key_comment_email];}
+	}elseif(!empty($_COOKIE[$key_comment_email])){$_SESSION[$key_comment_email]=$_COOKIE[$key_comment_email];}
 	/* Comment Author URL */
-	$key_auth_url_hist='wpss_author_url_history_'.WPSS_HASH;
-	$key_comment_url='comment_author_url_'.WPSS_HASH;
+	$key_auth_url_hist='wpss_author_url_history_'.WPSS_HASH;$key_comment_url='comment_author_url_'.WPSS_HASH;
 	if(empty($_SESSION[$key_auth_url_hist])){
 		$_SESSION[$key_auth_url_hist]=array();
-		if(!empty($_COOKIE[$key_comment_url])){
-			$_SESSION[$key_comment_url]=$_COOKIE[$key_comment_url];
-			$_SESSION[$key_auth_url_hist][]=$_COOKIE[$key_comment_url];
-		}
-	}else{
-		if(!empty($_COOKIE[$key_comment_url])){$_SESSION[$key_comment_url]=$_COOKIE[$key_comment_url];}
-	}
+		if(!empty($_COOKIE[$key_comment_url])){$_SESSION[$key_comment_url]=$_COOKIE[$key_comment_url];$_SESSION[$key_auth_url_hist][]=$_COOKIE[$key_comment_url];}
+	}elseif(!empty($_COOKIE[$key_comment_url])){$_SESSION[$key_comment_url]=$_COOKIE[$key_comment_url];}
 	/* AUTHOR, EMAIL, URL HISTORY - END */
 
 	/* SESSION USER BLACKLIST CHECK - BEGIN */
@@ -157,12 +135,9 @@ function wpss_js_getenv($e=FALSE,$add_vars=array()){
 	global $_WPSS_ENV;
 	if(empty($_WPSS_ENV)||!is_array($_WPSS_ENV)){$_WPSS_ENV=array();}
 	$_WPSS_ENV=(array)$_WPSS_ENV+(array)$_ENV;
-	$vars=array('REMOTE_ADDR','SERVER_ADDR','LOCAL_ADDR','HTTP_HOST','SERVER_NAME',);
-	$vars=!empty($add_vars)?(array)$vars+(array)$add_vars:$vars;
+	$vars=array('REMOTE_ADDR','SERVER_ADDR','LOCAL_ADDR','HTTP_HOST','SERVER_NAME',);$vars=!empty($add_vars)?(array)$vars+(array)$add_vars:$vars;
 	if(!empty($e)){$vars[]=$e;}
-	foreach($vars as $i => $v){
-		if(empty($_WPSS_ENV[$v])){$_WPSS_ENV[$v]=$_ENV[$v]='';if(function_exists('getenv')){$_WPSS_ENV[$v]=$_ENV[$v]=@getenv($v);}}
-	}
+	foreach($vars as $i => $v){if(empty($_WPSS_ENV[$v])){$_WPSS_ENV[$v]=$_ENV[$v]='';if(function_exists('getenv')){$_WPSS_ENV[$v]=$_ENV[$v]=@getenv($v);}}}
 	return FALSE!==$e?$_WPSS_ENV[$e]:$_WPSS_ENV;
 }
 function wpss_js_md5($str){

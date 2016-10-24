@@ -1,7 +1,7 @@
 <?php
 /**
  *  WP-SpamShield Compatibility
- *  File Version 1.9.9.3
+ *  File Version 1.9.9.4
  */
 
 if( !defined( 'ABSPATH' ) || !defined( 'WPSS_VERSION' ) ) {
@@ -170,13 +170,14 @@ class WPSS_Compatibility {
 		if( rs_wpss_is_admin_sproc() ) { return; }
 
 		/* Vantage Theme by Appthemes ( https://www.appthemes.com/themes/vantage/ ) */
-		global $wpss_theme_vantage; if( !empty( $wpss_theme_vantage ) ) { return TRUE; }
-		elseif( defined( 'APP_FRAMEWORK_DIR_NAME' ) && defined( 'VA_VERSION' ) ) { $wpss_theme_vantage = TRUE; return TRUE; }
+		global $wpss_theme_vantage; if( !empty( $wpss_theme_vantage ) ) { return TRUE; } elseif( defined( 'APP_FRAMEWORK_DIR_NAME' ) && defined( 'VA_VERSION' ) ) { $wpss_theme_vantage = TRUE; return TRUE; }
 		else {
 			$wpss_theme = wp_get_theme();
-			$theme_name = $wpss_theme->get( 'Name' );
-			$theme_author = $wpss_theme->get( 'Author' );
-			if( 'Vantage' === $theme_name && 'AppThemes' === $theme_author ) { $wpss_theme_vantage = TRUE; return TRUE; }
+			if( is_object( $wpss_theme ) && !empty( $wpss_theme ) ) {
+				$theme_name = $wpss_theme->get( 'Name' );
+				$theme_author = $wpss_theme->get( 'Author' );
+				if( 'Vantage' === $theme_name && 'AppThemes' === $theme_author ) { $wpss_theme_vantage = TRUE; return TRUE; }
+			}
 		}
 
 		/* Add next here... */

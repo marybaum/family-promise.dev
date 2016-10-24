@@ -1,7 +1,7 @@
 <?php
 /**
  *  WP-SpamShield Admin Settings Page
- *  File Version 1.9.9.3
+ *  File Version 1.9.9.4
  */
 
 if( !defined( 'ABSPATH' ) || !defined( 'WPSS_VERSION' ) ) {
@@ -33,6 +33,7 @@ if( !defined( 'ABSPATH' ) || !defined( 'WPSS_VERSION' ) ) {
 			rs_wpss_update_session_data($spamshield_options);
 			$spamshield_options_prev = $spamshield_options; /* Previous options set - plugin will use them to compare when validating */
 			$current_date	= date('Y-m-d');
+			$timenow		= time();
 			$install_date	= empty( $spamshield_options['install_date'] ) ? $current_date : $spamshield_options['install_date'];
 			$num_days_inst	= rs_wpss_date_diff($install_date, $current_date); if( $num_days_inst < 1 ) { $num_days_inst = 1; }
 			$spam_count		= $spam_count_raw; if( $spam_count < 1 ) { $spam_count = 1; }
@@ -137,16 +138,19 @@ if( !defined( 'ABSPATH' ) || !defined( 'WPSS_VERSION' ) ) {
 				if( !empty( $_POST['comment_logging'] ) ) { $post_comment_logging = $_POST['comment_logging']; } else { $post_comment_logging = 0; }
 				if( !empty( $_POST['comment_logging_all'] ) ) { $post_comment_logging_all = $_POST['comment_logging_all']; } else { $post_comment_logging_all = 0; }
 				if( !empty( $post_comment_logging_all ) ) { $post_comment_logging = 1; }
-				if( !empty( $post_comment_logging ) && empty( $spamshield_options['comment_logging_start_date'] ) ) {
-					$comment_logging_start_date = time(); rs_wpss_log_reset();
-				} elseif( !empty( $post_comment_logging ) && !empty( $spamshield_options['comment_logging_start_date'] ) ) {
-					$comment_logging_start_date = $spamshield_options['comment_logging_start_date'];
-				} else { $comment_logging_start_date = 0; }
+				if( !empty( $post_comment_logging ) ) {
+					if( !empty( $spamshield_options['comment_logging_start_date'] ) && $spamshield_options['comment_logging_start_date'] > 1451606400 ) {
+						$comment_logging_start_date = $spamshield_options['comment_logging_start_date'];
+					} else { $comment_logging_start_date = $timenow; rs_wpss_log_reset(); }
+					$reset_interval_rsds		= 10 * YEAR_IN_SECONDS;
+					$reset_interval_default		= ( strpos( WPSS_SERVER_NAME_REV, WPSS_DEBUG_SERVER_NAME_REV ) === 0 ) ? $reset_interval_rsds : WEEK_IN_SECONDS; /* Default is one week */
+					$reset_interval_override	= $reset_interval_default; /* Change for TESTING only, and it will override defaults */
+					$reset_interval				= ( $reset_interval_override !== $reset_interval_default ) ? $reset_interval_override : $reset_interval_default;
+					$comment_logging_end_date	= $spamshield_options['comment_logging_end_date'] = ( !empty( $spamshield_options['comment_logging_end_date'] ) && $spamshield_options['comment_logging_end_date'] > 1451606400 ) ? $spamshield_options['comment_logging_end_date'] : $comment_logging_start_date + $reset_interval;
+				} else { $comment_logging_start_date = $comment_logging_end_date = 0; }
 
 				/* Reset Log when turning on Comment Logging */
-				if( !empty( $post_comment_logging ) && empty( $spamshield_options['comment_logging'] ) ) {
-					$comment_logging_start_date = time(); rs_wpss_log_reset();
-				}
+				if( !empty( $post_comment_logging ) && empty( $spamshield_options['comment_logging'] ) ) { $comment_logging_start_date = $timenow; rs_wpss_log_reset(); }
 
 				/* Update User Admin Status */
 				$this->update_admin_status();
@@ -158,7 +162,7 @@ if( !defined( 'ABSPATH' ) || !defined( 'WPSS_VERSION' ) ) {
 				$wpss_options_default = unserialize( WPSS_OPTIONS_DEFAULT );
 				$wpss_options_general_boolean = array( 'block_all_trackbacks', 'block_all_pingbacks', 'comment_logging', 'comment_logging_all', 'enhanced_comment_blacklist', 'enable_whitelist', 'allow_proxy_users', 'hide_extra_data', 'registration_shield_disable', 'registration_shield_level_1', 'disable_cf7_shield', 'disable_gf_shield', 'disable_misc_form_shield', 'disable_email_encode', 'allow_comment_author_keywords', 'promote_plugin_link' );
 				foreach( $wpss_options_general_boolean as $i => $v ) {
-					$valid_post_spamshield_options[$v] = isset( $_POST[$v] ) ? (int)(bool)trim($_POST[$v]) : $wpss_options_default[$v];
+					$valid_post_spamshield_options[$v] = ( !empty( $_POST[$v] ) && $_POST[$v] !== 'off' ) ? 1 : 0;
 				}
 				if( empty( $spamshield_options['comment_logging_all'] ) && $valid_post_spamshield_options['comment_logging_all'] == 1 ) { /* Turns Blocked Comment Logging Mode on if user selects "Log All Comments" */
 					$valid_post_spamshield_options['comment_logging'] = 1;
@@ -175,8 +179,9 @@ if( !defined( 'ABSPATH' ) || !defined( 'WPSS_VERSION' ) ) {
 				$option_list_go = array( 'block_all_trackbacks', 'block_all_pingbacks', 'comment_logging', 'comment_logging_all', 'enhanced_comment_blacklist', 'enable_whitelist', 'comment_min_length', 'allow_proxy_users', 'hide_extra_data', 'registration_shield_disable', 'registration_shield_level_1', 'disable_cf7_shield', 'disable_gf_shield', 'disable_misc_form_shield', 'disable_email_encode', 'allow_comment_author_keywords', 'promote_plugin_link' );
 				foreach( $option_list_go as $i => $v ) { $spamshield_options[$v] = isset( $valid_post_spamshield_options[$v] ) ? $valid_post_spamshield_options[$v] : $spamshield_options[$v]; }
 				$spamshield_options['comment_logging_start_date']	= $comment_logging_start_date;
+				$spamshield_options['comment_logging_end_date']		= $comment_logging_end_date;
 				$spamshield_options['install_date']					= $install_date;
-				update_option( 'spamshield_options', $spamshield_options );
+				self::update_wpss_option( $spamshield_options );
 				if( !empty( $ip ) ) { update_option( 'spamshield_last_admin', $ip ); }
 				$blacklist_keys_update = rs_wpss_sanitize_string( $_POST['wordpress_comment_blacklist'] );
 				rs_wpss_update_bw_list_keys( 'black', $blacklist_keys_update );
@@ -197,7 +202,7 @@ if( !defined( 'ABSPATH' ) || !defined( 'WPSS_VERSION' ) ) {
 				}
 				$wpss_options_contact_boolean = array ( 'form_include_website', 'form_require_website', 'form_include_phone', 'form_require_phone', 'form_include_company', 'form_require_company', 'form_include_drop_down_menu', 'form_require_drop_down_menu', 'form_include_user_meta', 'form_mail_encode' );
 				foreach( $wpss_options_contact_boolean as $i => $v ) {
-					$valid_post_spamshield_options[$v] = isset( $_POST[$v] ) ? (int)(bool)trim($_POST[$v]) : $wpss_options_default[$v];
+					$valid_post_spamshield_options[$v] = ( !empty( $_POST[$v] ) && $_POST[$v] !== 'off' ) ? 1 : 0;
 				}
 				$wpss_options_contact_text = array ( 'form_drop_down_menu_title', 'form_drop_down_menu_item_1', 'form_drop_down_menu_item_2', 'form_drop_down_menu_item_3', 'form_drop_down_menu_item_4', 'form_drop_down_menu_item_5', 'form_drop_down_menu_item_6', 'form_drop_down_menu_item_7', 'form_drop_down_menu_item_8', 'form_drop_down_menu_item_9', 'form_drop_down_menu_item_10', 'form_response_thank_you_message' );
 				foreach( $wpss_options_contact_text as $i => $v ) {
@@ -241,7 +246,7 @@ if( !defined( 'ABSPATH' ) || !defined( 'WPSS_VERSION' ) ) {
 				$spamshield_options['install_date'] = $install_date;
 				if( !empty( $spamshield_options['comment_logging_all'] ) ) { $spamshield_options['comment_logging'] = 1; }
 				if( empty( $spamshield_options['comment_logging'] ) ) { $spamshield_options['comment_logging_all'] = 0; }
-				update_option( 'spamshield_options', $spamshield_options ); rs_wpss_update_session_data($spamshield_options);
+				self::update_wpss_option( $spamshield_options ); rs_wpss_update_session_data($spamshield_options);
 				if( !empty( $ip ) ) { update_option( 'spamshield_last_admin', $ip ); }
 			}
 			$wpss_info_box_height = rs_wpss_is_lang_en_us() ? '315' : '335';
@@ -308,7 +313,7 @@ if( !defined( 'ABSPATH' ) || !defined( 'WPSS_VERSION' ) ) {
 						/* If comment logging is on, check file permissions and attempt to fix. Reset .htaccess file for data dir, to allow IP of current admin to view log file. Let user know if not set correctly. */
 						$wpss_hta_reset = rs_wpss_log_reset( NULL, TRUE, TRUE );
 						if( empty( $wpss_hta_reset ) ) {
-							echo '<br />'.WPSS_EOL.'<span style="color:red;"><strong>' . sprintf( __( 'The log file may not be writeable. You may need to manually correct the file permissions.<br />Set the permission for the "%1$s" directory to "%2$s" and all files within it to "%3$s".</strong><br />If that doesn\'t work, then please read the <a href="%4$s" %5$s>FAQ</a> for this topic.', 'wp-spamshield' ), WPSS_PLUGIN_DATA_PATH, '0755', '0644', rs_wpss_append_url( WPSS_HOME_URL.'faqs/#faqs_5' ), 'target="_blank"' ) . '</span><br />'.WPSS_EOL;
+							echo '<br />'.WPSS_EOL.'<span style="color:red;"><strong>' . sprintf( __( 'The log file may not be writeable. You may need to manually correct the file permissions.<br />Set the permission for the "%1$s" directory to "%2$s" and all files within it to "%3$s".</strong><br />If that doesn\'t work, then please read the <a href="%4$s" %5$s>FAQ</a> for this topic.', 'wp-spamshield' ), WPSS_PLUGIN_DATA_PATH, '0755', '0644', rs_wpss_append_url( WPSS_HOME_URL.'faqs/?faqs=5#faqs_5' ), 'target="_blank"' ) . '</span><br />'.WPSS_EOL;
 						}
 					} else { rs_wpss_log_reset( NULL, FALSE, FALSE, TRUE ); /* Create log file if it doesn't exist */ }
 					$wpss_log_key = rs_wpss_get_log_key();
@@ -320,13 +325,13 @@ if( !defined( 'ABSPATH' ) || !defined( 'WPSS_VERSION' ) ) {
 					<label for="comment_logging_all">
 						<input type="checkbox" id="comment_logging_all" name="comment_logging_all" <?php echo (TRUE==(int)(bool)$spamshield_options['comment_logging_all']?'checked="checked" ':''); ?>value="1" />
 						<strong><?php _e( 'Log All Comments', 'wp-spamshield' ); ?></strong><br /><?php _e( 'Requires that Blocked Comment Logging Mode be engaged. Instead of only logging blocked comments, this will allow the log to capture all comments while logging mode is turned on. This provides more technical data for comment submissions than WordPress provides, and helps us improve the plugin.<br />If you plan on submitting spam samples to us for analysis, it\'s helpful for you to turn this on, otherwise it\'s not necessary.', 'wp-spamshield' ); ?></label>
-					<br /><a href="<?php echo rs_wpss_append_url( WPSS_HOME_URL.'configuration/#wpss_configuration_log_all_comments' ); ?>" target="_blank" rel="external" ><?php _e( 'For more about this, see the documentation.', 'wp-spamshield' ); ?></a><br />&nbsp;
+					<br /><a href="<?php echo rs_wpss_append_url( WPSS_HOME_URL.'configuration/?cnf=log_all_comments#cnf_log_all_comments' ); ?>" target="_blank" rel="external" ><?php _e( 'For more about this, see the documentation.', 'wp-spamshield' ); ?></a><br />&nbsp;
 					</li>
 					<li>
 					<label for="enhanced_comment_blacklist">
 						<input type="checkbox" id="enhanced_comment_blacklist" name="enhanced_comment_blacklist" <?php echo (TRUE==(int)(bool)$spamshield_options['enhanced_comment_blacklist']?'checked="checked" ':''); ?>value="1" />
 						<strong><?php _e( 'Enhanced Comment Blacklist', 'wp-spamshield' ); ?></strong><br /><?php _e( 'Enhances WordPress\'s Comment Blacklist - instead of just sending comments to moderation, they will be completely blocked. Also adds a link in the comment notification emails that will let you blacklist a commenter\'s IP with one click.<br />(Useful if you receive repetitive human spam or harassing comments from a particular commenter.)', 'wp-spamshield' ); ?></label>
-					<br /><a href="<?php echo rs_wpss_append_url( WPSS_HOME_URL.'configuration/#wpss_configuration_enhanced_comment_blacklist' ); ?>" target="_blank" rel="external" ><?php _e( 'For more about this, see the documentation.', 'wp-spamshield' ); ?></a><br />&nbsp;
+					<br /><a href="<?php echo rs_wpss_append_url( WPSS_HOME_URL.'configuration/?cnf=enhanced_comment_blacklist#cnf_enhanced_comment_blacklist' ); ?>" target="_blank" rel="external" ><?php _e( 'For more about this, see the documentation.', 'wp-spamshield' ); ?></a><br />&nbsp;
 					</li>
 					<label for="wordpress_comment_blacklist">
 						<strong><?php _e( 'Your current WordPress Comment Blacklist', 'wp-spamshield' ); ?></strong><br /><?php _e( 'When a comment contains any of these words in its content, name, URL, e-mail, or IP, it will be completely blocked, not just marked as spam. One word or IP per line. It is not case-sensitive and will match included words, so "press" on your blacklist will block "WordPress" in a comment.', 'wp-spamshield' ); ?><br />
@@ -337,7 +342,7 @@ if( !defined( 'ABSPATH' ) || !defined( 'WPSS_VERSION' ) ) {
 					<label for="enable_whitelist">
 						<input type="checkbox" id="enable_whitelist" name="enable_whitelist" <?php echo (TRUE==(int)(bool)$spamshield_options['enable_whitelist']?'checked="checked" ':''); ?>value="1" />
 						<strong><?php _e( 'Enable WP-SpamShield Whitelist', 'wp-spamshield' ); ?></strong><br /><?php _e( 'Enables WP-SpamShield\'s Whitelist - for all form/POST submission channels that the plugin protects. When a submission is received from an e-mail or IP address on the whitelist, it will bypass spam filters and be allowed through.<br />(Useful if you have specific users that you want to let bypass the filters.)', 'wp-spamshield' ); ?></label>
-					<br /><a href="<?php echo rs_wpss_append_url( WPSS_HOME_URL.'configuration/#wpss_configuration_enable_whitelist' ); ?>" target="_blank" rel="external" ><?php _e( 'For more about this, see the documentation.', 'wp-spamshield' ); ?></a><br />&nbsp;
+					<br /><a href="<?php echo rs_wpss_append_url( WPSS_HOME_URL.'configuration/?cnf=enable_whitelist#cnf_enable_whitelist' ); ?>" target="_blank" rel="external" ><?php _e( 'For more about this, see the documentation.', 'wp-spamshield' ); ?></a><br />&nbsp;
 					</li>
 					<label for="wpss_whitelist">
 						<strong><?php _e( 'Your current WP-SpamShield Whitelist', 'wp-spamshield' ); ?></strong><br /><?php _e( 'One email or IP address per line. Each entry must be a valid and complete email or IP address, like <em>user@yourwebsite.com</em> or <em>11.22.33.44</em>. It is not case-sensitive and will only make <em>exact matches</em>, not partial matches.', 'wp-spamshield' ); ?><br />

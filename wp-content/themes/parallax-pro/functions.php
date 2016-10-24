@@ -28,7 +28,7 @@ function parallax_enqueue_scripts_styles() {
 	wp_enqueue_script( 'parallax-responsive-menu', get_bloginfo( 'stylesheet_directory' ) . '/js/responsive-menu.js', array( 'jquery' ), '1.0.0' );
 	wp_enqueue_style( 'dashicons' );
 	wp_enqueue_style( 'fampr-google-fonts', 'https://fonts.googleapis.com/css?family=Open+Sans', array() );
-	wp_enqueue_style( 'fampr-rasa ', 'https://fonts.googleapis.com/css?family=Rasa', array() );
+	wp_enqueue_style( 'fampr-rasa ', 'https://fonts.googleapis.com/css?family=Rasa:300,400,500,600,700', array() );
 
 }
 
@@ -67,20 +67,20 @@ genesis_unregister_layout( 'sidebar-content-sidebar' );
 genesis_unregister_layout( 'sidebar-sidebar-content' );
 
 //* Add support for additional color styles
-add_theme_support( 'genesis-style-selector', array(
+/*add_theme_support( 'genesis-style-selector', array(
 	'parallax-pro-blue'   => __( 'Parallax Pro Blue', 'parallax' ),
 	'parallax-pro-green'  => __( 'Parallax Pro Green', 'parallax' ),
 	'parallax-pro-orange' => __( 'Parallax Pro Orange', 'parallax' ),
 	'parallax-pro-pink'   => __( 'Parallax Pro Pink', 'parallax' ),
-) );
+) );*/
 
 //* Unregister secondary sidebar
 unregister_sidebar( 'sidebar-alt' );
 
 //* Add support for custom header
 add_theme_support( 'custom-header', array(
-	'width'           => 360,
-	'height'          => 70,
+	'width'           => 330,
+	'height'          => 130,
 	'header-selector' => '.site-title a',
 	'header-text'     => false,
 ) );
@@ -105,6 +105,9 @@ function parallax_after_entry() {
 		) );
 
 }
+
+//add custom image sizes
+add_image_size('home-section-4' , 332, 368, false );
 
 //* Modify the size of the Gravatar in the author box
 add_filter( 'genesis_author_box_gravatar_size', 'parallax_author_box_gravatar' );
