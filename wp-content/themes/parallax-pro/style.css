@@ -82,10 +82,10 @@
 /* Colors
  * --------------------------------
  * Green #9adbce
- * gold #fcc219 
+ * gold #fec06c 
  * charcoal #4d4d55
- * grey #5d5e65
- * FP blue #0075bf
+ * grey #6a6a70
+ * FP blue #0075be
  */
 /*
 Imports
@@ -107,7 +107,8 @@ Imports
 HTML5 Reset
 ---------------------------------------------------------------------------------------------------- */
 
-/* Baseline Normalize
+/*
+ Baseline Normalize
 	normalize.css v2.1.3 | MIT License | git.io/normalize
 --------------------------------------------- */
 
@@ -310,7 +311,7 @@ html {
 
 body {
 	background-color: #fff;
-	color: #4d4d55;
+	color: #6a6a70;
 	font-family: 'Open Sans', sans-serif;
 	font-size: 22px;
 	font-weight: 400;
@@ -350,7 +351,7 @@ textarea:focus {
 }
 
 a {
-	color: #0075bf;
+	color: #0075be;
 	text-decoration: none;
 }
 
@@ -435,14 +436,14 @@ h3 {
 }
 
 h4 {
-	color: #0075bf;
+	color: #0075be;
 	font-family: Rasa, serif;
 	font-size: 2.4em;
 	font-weight: 700;
 }
 
 h5 {
-	color: #0075bf;
+	color: #0075be;
 	font-family: Rasa, serif;
 	font-size: 1.8em;
 	font-weight: 500;
@@ -575,13 +576,13 @@ button.star a {
 	background: url(images/star-gold.svg) 20% 50% no-repeat;
 	background-size: contain;
 	border: none;
-	color: #0075bf;
+	color: #0075be;
 	float: right;
 	margin: 1rem 0 .2rem;	
 }
 
 a.more-link {
-	color: #0075bf;
+	color: #0075be;
 	font: normal normal normal 1.3em/2 'Open Sans', sans-serif;
 	font-weight:  700;
 	letter-spacing: 1px;
@@ -594,27 +595,26 @@ button.swash {
 	background: url(images/star-with-swash-blue.svg) right 80% no-repeat;
 	background-size: 100%;
 	border: none;
-	color: #0075bf;
+	color: #0075be;
 	display: block;
-	height: 5em;
+	height: 6.2em;
 	padding: .2em .1em .1em;
-	margin: -2em 5% 1em;
+	margin: -1.8em 5% 1em;
 	float: right;
-	width: 25%;
+	width: 22%;
 }
 
 button.swash a {
-	color: #0075bf;
+	color: #0075be;
 	display: block;
 	font: normal normal normal 1.3em/2 'Open Sans', sans-serif;
 	font-weight:  700;
-	letter-spacing: 1px;
-	padding: .1em 1.7em 0;
+	letter-spacing: 3px;
+	padding: 0.2em 1.5em 0;
 	margin: 0 auto 0.9em;
 	text-align: center;
 	text-transform: uppercase;
 }
-
 /*.footer-widgets a.button,
 .home-even a.button,
 .home-odd a.button {
@@ -867,7 +867,7 @@ Common Classes
 }
 
 .entry-title a:hover {
-	color: #0075bf;
+	color: #0075be;
 }
 
 .widget-title {
@@ -1127,7 +1127,7 @@ header.site-header {
 }
 
 .site-header .widget-area a:hover {
-	color: #0075bf;
+	color: #0075be;
 }
 
 .site-header .textwidget {
@@ -1160,14 +1160,14 @@ Site Navigation
 	color: #4d4d55;
 	display: block;
 	font-family: 'Open Sans', sans-serif;
-	padding: .5em 1em;
+	padding: .5em 2em;
 }
 
 .genesis-nav-menu a:hover,
 .genesis-nav-menu .current-menu-item > a,
 .genesis-nav-menu .sub-menu a:hover,
 .genesis-nav-menu .sub-menu .current-menu-item > a:hover {
-	color: #0075bf;
+	color: #0075be;
 }
 
 .genesis-nav-menu .menu-item a {
@@ -1315,7 +1315,7 @@ Content Area
 }
 
 .home-odd .featured-content .entry-title a:hover {
-	color: #0075bf;
+	color: #0075be;
 }
 
 .home-even p:last-child,
@@ -1329,7 +1329,7 @@ Content Area
 
 .home-section-1,
 .home-section-3 {
-	background-attachment: fixed;
+	background-attachment: scroll;
 	background-repeat: no-repeat;
 	display: block;
 	-webkit-background-size: cover;
@@ -1354,24 +1354,51 @@ Content Area
 }
 
 .home-section-2 h3 {
-	color: #0075bf;
+	color: #0075be;
 }
 
-.home-section-2 p {
+.home-section-2 p,
+.home-even.home-section-4 .entry-content p {
 	font-size: 1.2em;
-	margin-bottom: .5em;
+	font-weight: 700;
+	line-height: 1.4;
 	text-align: left;
 }
 
-.home-section-3 {
-	background-size: cover;
-	padding: 2rem 0 2rem 20%;
+.home-section-3.widget-area {
+	background: url(images/home-panel03.jpg) 50% -5em no-repeat;
+	background-size: 100%;
+	height: 31em;
+	padding: 0;
+	position: relative;
+	text-align: center;
+	width: 100%;
+}
+
+.home-section-3 .widget-wrap {
+	background: url(images/subheader-star-line.png) 50% 0 no-repeat;
+	background-size: 100%;
+	height: 6em;
+	position: absolute;
+	top: .5em;
+	left: 0;
+	right: 0;
+	z-index: 15;
+}
+
+.home-section-3 .textwidget h5 {
+	color:  #0075be;
+	font-size: 2.7em;
+	margin: 2em 0;
 }
 
 .home-section-3 .textwidget img {
-	height: 34em;
+	background-size: 100%;
+	position: absolute;
+	top: 0;
+	left: 20%;
+	z-index: 55;
 }
-
 .cols2 {
 	columns: 2;
 	margin: 0 auto;
@@ -1389,10 +1416,15 @@ Content Area
 	width: 45%;
 }
 
+.home-section-4 .featured-content img {
+	height: 30em;
+	width: auto;
+}
+
 .home-even.home-section-4 .widget-title,
 .home-even.home-section-4 .widget-title a,
 .home-section-4 .entry-title a {
-	color: #0075bf;
+	color: #0075be;
 	font-family: 'Open Sans', sans-serif;
 	font-size: 1em
 	text-align: left;
@@ -1467,7 +1499,7 @@ Content Area
 }
 
 .pricing-table a.button:hover {
-	background-color: #0075bf;
+	background-color: #0075be;
 	border: 3px solid #f04848;
 	color: #fff;
 }*/
@@ -1577,8 +1609,9 @@ p.entry-meta {
 	margin: 0 6px 0 2px;
 }
 
-/* After Entry
---------------------------------------------- */
+/*After Entry
+ --------------------------------------------- */
+
 
 .after-entry {
 	border-top: 1px solid #4d4d55;
@@ -1628,7 +1661,7 @@ p.entry-meta {
 
 .archive-pagination li a:hover,
 .archive-pagination .active a {
-	background: #0075bf;
+	background: #0075be;
 	color: #fff;
 }
 
@@ -2004,7 +2037,6 @@ Media Queries
 	.home-section-1,
 	.home-section-3,
 	.home-section-5 {
-		background-attachment: scroll;
 		background-position: top;
 		-webkit-background-size: auto;
 		-moz-background-size:    auto;
